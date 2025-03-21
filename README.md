@@ -42,6 +42,7 @@ The pipeline is implemented using a combination of Python scripts, shell scripts
 ## Pipeline Structure
 
 The pipeline is organized into the following directories:
+```
 .
 ├── 01_finding-data
 ├── 02_data-preparation
@@ -51,7 +52,7 @@ The pipeline is organized into the following directories:
 ├── 06_anat-preprocessing
 ├── 07_source-reconstruction
 └── README.md
-
+```
 
 Each directory corresponds to a specific step in the pipeline. Below is a brief description of each step.
 
