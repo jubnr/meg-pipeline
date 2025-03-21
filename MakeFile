@@ -1,0 +1,54 @@
+# ------ Directories ------ #
+FINDING_DATA_DIR = 01_finding-data
+DATA_PREP_DIR = 02_data-preparation
+BIDS_CONVERSION_DIR = 03_bids-conversion
+MEG_PREPROCESSING_DIR = 04_meg-preprocessing
+ANAT_PREPROCESSING_DIR = 05_anat-preprocessing
+SOURCE_RECONSTRUCTION_DIR = 06_source-reconstruction
+
+# ------ Input files ------ #
+PARTICIPANTS_FILE = $(FINDING_DATA_DIR)/participants_to_import.tsv
+ANAT_MRI_FILE = $(FINDING_DATA_DIR)/anat_mri.txt
+
+# ------ Output files ------ #
+CROPPED_RUNS = $(DATA_PREP_DIR)/cropped_runs.txt
+BIDS_DIR = $(BIDS_CONVERSION_DIR)/bids
+
+# ------ Step 1: Finding data ------ #
+$(PARTICIPANTS_FILE): $(FINDING_DATA_DIR)/find_anat_mri.ipynb
+    jupyter nbconvert --execute $(FINDING_DATA_DIR)/find_anat_mri.ipynb
+
+# ------ Step 2: Preparing data ------ #
+$(CROPPED_RUNS): $(PARTICIPANTS_FILE)
+    python $(DATA_PREP_DIR)/crop_runs.py --input $(PARTICIPANTS_FILE) --output $(CROPPED_RUNS)
+
+# ------ Step 3: Converting into BIDS format ------ #
+$(BIDS_DIR): $(CROPPED_RUNS)
+    python $(BIDS_CONVERSION_DIR)/formatting_distraction.py --input $(CROPPED_RUNS) --output $(BIDS_DIR)
+    bash $(BIDS_CONVERSION_DIR)/rename_files_impair.sh $(BIDS_DIR)
+    bash $(BIDS_CONVERSION_DIR)/rename_files_pair.sh $(BIDS_DIR)
+
+# ------ Step 4: MEG preprocessing ------ #
+meg-preprocessing: sanity-check
+    python $(MEG_PREPROCESSING_DIR)/01_preprocessing.py --bids_dir $(BIDS_DIR)
+    python $(MEG_PREPROCESSING_DIR)/02_get_noise_cov.py --bids_dir $(BIDS_DIR)
+
+# ------ Step 5: Anatomical preprocessing ------ #
+anat-preprocessing: meg-preprocessing
+    bash $(ANAT_PREPROCESSING_DIR)/01_run_freesurfer_on_subject_id.sh
+    bash $(ANAT_PREPROCESSING_DIR)/02_run_freesurfer_on_all_subjects.sh
+    python $(ANAT_PREPROCESSING_DIR)/03_bem.py
+    python $(ANAT_PREPROCESSING_DIR)/04_coreg.py
+
+# ------ Step 6: Source reconstruction ------ #
+source-reconstruction: anat-preprocessing
+    python $(SOURCE_RECONSTRUCTION_DIR)/01_get_source_estimate.py
+    python $(SOURCE_RECONSTRUCTION_DIR)/02_stc_morphing.py
+    python $(SOURCE_RECONSTRUCTION_DIR)/03_plotting.py
+    python $(SOURCE_RECONSTRUCTION_DIR)/04_make_report.py
+
+# ------ Default target ------ #
+all: source-reconstruction
+
+# ------ Phony targets ------ #
+.PHONY: all meg-preprocessing anat-preprocessing source-reconstruction
