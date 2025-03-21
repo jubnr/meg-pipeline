@@ -27,11 +27,11 @@ Welcome to the **MEG Pipeline**! This repository contains a comprehensive and mo
 
 This pipeline processes MEG data through a series of well-defined steps, ensuring high-quality results for source reconstruction. It includes:
 
-- **Data preparation**: Cropping and organizing raw data.
-- **BIDS conversion**: Converting data to the Brain Imaging Data Structure (BIDS) format.
-- **Preprocessing**: Filtering, noise covariance estimation, and artifact removal.
-- **Anatomical preprocessing**: FreeSurfer reconstruction, BEM creation, and coregistration.
-- **Source reconstruction**: Estimating neural activity and generating reports.
+- 📂 **Data preparation**: Cropping and organizing raw data.
+- 💱 **BIDS conversion**: Converting data to the Brain Imaging Data Structure (BIDS) format.
+- 🧹 **Preprocessing**: Filtering, noise covariance estimation, and artifact removal.
+- 📊 **Anatomical preprocessing**: FreeSurfer reconstruction, BEM creation, and coregistration.
+- 🧠 **Source reconstruction**: Estimating neural activity and generating reports.
 
 The pipeline is implemented using a combination of Python scripts, shell scripts, and Jupyter notebooks, and can be run using a **Makefile** for automation.
 
@@ -58,7 +58,7 @@ Each directory corresponds to a specific step in the pipeline. Below is a brief 
 
 ---
 
-## Getting Started
+## Getting Started📍
 
 ### Prerequisites
 
@@ -71,7 +71,7 @@ Before running the pipeline, ensure you have the following installed:
 - **BIDS Validator** (for BIDS compliance checking)
 - **Make** (for running the pipeline)
 
-### Installation
+### Installation 🔃
 
 1. Clone this repository:
    ```bash
@@ -90,7 +90,7 @@ Before running the pipeline, ensure you have the following installed:
         source $FREESURFER_HOME/SetUpFreeSurfer.sh
         ```
 
-### Running the Pipeline
+### Running the Pipeline 🏃
 To run the entire pipeline, use the provided Makefile:
    ```bash
     make all
