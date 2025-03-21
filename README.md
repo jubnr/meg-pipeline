@@ -1,4 +1,4 @@
-# MEG Pipeline: From Raw Data to Source Reconstruction
+# MEG Pipeline: From Raw Data to Source Reconstruction 🧠
 
 Welcome to the **MEG Pipeline**! This repository contains a comprehensive and modular pipeline for processing Magnetoencephalography (MEG) data, from raw data preparation to source reconstruction. The pipeline is designed to be easy to use, reproducible, and adaptable to various datasets.
 
