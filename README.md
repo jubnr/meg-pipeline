@@ -1,4 +1,4 @@
-# MEG Pipeline: From Raw Data to Source Reconstruction 🧠
+# MEG Pipeline: From Raw Data to Source Reconstruction
 
 Welcome to the **MEG Pipeline**! This repository contains a comprehensive and modular pipeline for processing Magnetoencephalography (MEG) data, from raw data preparation to source reconstruction. The pipeline is designed to be easy to use, reproducible, and adaptable to various datasets.
 
@@ -75,7 +75,7 @@ Before running the pipeline, ensure you have the following installed:
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/your-username/meg-pipeline.git
+   git clone https://github.com/jubnr/meg-pipeline.git
    cd meg-pipeline
    ```
 2. Install Python dependencies:

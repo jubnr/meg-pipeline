@@ -1,10 +1,6 @@
-#%%
-# Imports ######
-from __future__ import annotations
+#
 import pandas as pd
-import os
-import re
-import mne
+import os, re, mne
 from pathlib import Path
 from mne_bids import BIDSPath, write_raw_bids
 
