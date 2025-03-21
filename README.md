@@ -23,7 +23,7 @@ Welcome to the **MEG Pipeline**! This repository contains a comprehensive and mo
 
 ---
 
-## Overview
+## Overview 👀
 
 This pipeline processes MEG data through a series of well-defined steps, ensuring high-quality results for source reconstruction. It includes:
 
@@ -39,7 +39,7 @@ The pipeline is implemented using a combination of Python scripts, shell scripts
 
 ---
 
-## Pipeline Structure
+## Pipeline Structure 🏗️
 
 The pipeline is organized into the following directories:
 ```
@@ -58,7 +58,7 @@ Each directory corresponds to a specific step in the pipeline. Below is a brief 
 
 ---
 
-## Getting Started📍
+## Getting Started 📍
 
 ### Prerequisites
 
@@ -71,7 +71,7 @@ Before running the pipeline, ensure you have the following installed:
 - **BIDS Validator** (for BIDS compliance checking)
 - **Make** (for running the pipeline)
 
-### Installation 🔃
+### Installation 
 
 1. Clone this repository:
    ```bash
@@ -90,7 +90,7 @@ Before running the pipeline, ensure you have the following installed:
         source $FREESURFER_HOME/SetUpFreeSurfer.sh
         ```
 
-### Running the Pipeline 🏃
+### Running the Pipeline
 To run the entire pipeline, use the provided Makefile:
    ```bash
     make all
