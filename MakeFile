@@ -17,7 +17,7 @@ BIDS_DIR = $(BIDS_CONVERSION_DIR)/bids
 # ------ Step 1: Finding data ------ #
 $(PARTICIPANTS_FILE): $(FINDING_DATA_DIR)/find_anat_mri.ipynb
     jupyter nbconvert --execute $(FINDING_DATA_DIR)/find_anat_mri.ipynb
-
+	
 # ------ Step 2: Preparing data ------ #
 $(CROPPED_RUNS): $(PARTICIPANTS_FILE)
     python $(DATA_PREP_DIR)/crop_runs.py --input $(PARTICIPANTS_FILE) --output $(CROPPED_RUNS)
@@ -25,8 +25,6 @@ $(CROPPED_RUNS): $(PARTICIPANTS_FILE)
 # ------ Step 3: Converting into BIDS format ------ #
 $(BIDS_DIR): $(CROPPED_RUNS)
     python $(BIDS_CONVERSION_DIR)/formatting_distraction.py --input $(CROPPED_RUNS) --output $(BIDS_DIR)
-    bash $(BIDS_CONVERSION_DIR)/rename_files_impair.sh $(BIDS_DIR)
-    bash $(BIDS_CONVERSION_DIR)/rename_files_pair.sh $(BIDS_DIR)
 
 # ------ Step 4: MEG preprocessing ------ #
 meg-preprocessing: sanity-check

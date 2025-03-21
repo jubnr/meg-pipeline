@@ -4,7 +4,7 @@ import os, yaml
 from pathlib import Path
 import mne
 import numpy as np
-import pandas as pd
+import pandas as pdruns
 import typing as tp
 import dataclasses, itertools
 from wordfreq import zipf_frequency
@@ -26,7 +26,6 @@ STUDY = config["study"]
 TASK = config["task"]
 SESSION = config["session"]
 MEG_DIR = config["meg_dir"]
-RUNS = config["runs"]
 
 # Define paths from config
 BASE_PATH = Path(config["base_path"])
@@ -42,7 +41,7 @@ FILTER_HIGH = config["filter_high"]
 EPOCH_TMIN = config["epoch_tmin"]
 EPOCH_TMAX = config["epoch_tmax"]
 BASELINE = tuple(config["baseline"])
-
+RUNS = config["runs"]
 
 class NoApproximateMatch(ValueError):
     """Error raised when the function could not fully match the two list
@@ -165,7 +164,7 @@ TOL_MISSING_DICT = {tuple(k): tuple(v) for k, v in config["tolerances"].items()}
 def preprocessing(SUBJECT):
     evo_diff_all = []
 
-    for i in runs:
+    for i in RUNS:
         
         raw_fname = SUBJECTS_DIR / f"{SUBJECT}/{MEG_DIR}/{SUBJECT}_{SESSION}task-{TASK}_run-0{i}_meg.fif"
         raw = mne.io.read_raw_fif(raw_fname, allow_maxshield=True)
@@ -189,8 +188,8 @@ def preprocessing(SUBJECT):
         del raw_ref
         gc.collect()
 
-        os.makedirs(SUBJECTS_DIR / f"derivatives/preprocessed_data/{SUBJECT}", exist_ok=True)
-        raw_sss.save(SUBJECTS_DIR / f"derivatives/preprocessed_data/{SUBJECT}/{SUBJECT}_{SESSION}task-{TASK}_run-0{i}_meg_raw_sss.fif", overwrite=True)
+        os.makedirs(SUBJECTS_DIR / f"/derivatives/preprocessed_data/{SUBJECT}", exist_ok=True)
+        raw_sss.save(SUBJECTS_DIR / f"/derivatives/preprocessed_data/{SUBJECT}/{SUBJECT}_{SESSION}task-{TASK}_run-0{i}_meg_raw_sss.fif", overwrite=True)
 
         # ------------- Loading metadata with onsets, words, and duration ------------- #
         words = pd.read_csv(METADATA + f"{SUBJECT}_{SESSION}task-{TASK}_run-0{i}_events.tsv", sep="\t")
@@ -239,22 +238,6 @@ def preprocessing(SUBJECT):
     evo_diff_average = mne.grand_average(evo_diff_all)
     return evo_diff_average
 
-for subject_folder in SUBJECTS_DIR.iterdir():
-    SUBJECT = subject_folder.name
-    if not SUBJECT.startswith('sub-'):
-        continue
-
-    preprocessed_dir = SUBJECTS_DIR / f'derivatives/preprocessed_data'
-
-    if (preprocessed_dir / SUBJECT).exists():
-        continue
-
-    evo_diff_average = preprocessing(SUBJECT)
-
-    os.makedirs(SUBJECTS_DIR / f'derivatives/preprocessed_data/{SUBJECT}', exist_ok=True)
-    evo_diff_average.save(SUBJECTS_DIR / f'derivatives/preprocessed_data/{SUBJECT}/{SUBJECT}_evo_diff-ave.fif', overwrite=True)
-
-# Uncomment this for doing it for a single subject 
 # for SUBJECT in subjects:
 #     preprocessed_dir = BASE_PATH / f"{STUDY}/derivatives/preprocessed_data"
 #     if (preprocessed_dir / SUBJECT).exists():
@@ -262,5 +245,20 @@ for subject_folder in SUBJECTS_DIR.iterdir():
 
 #     evo_diff_average = preprocessing(SUBJECT)
 
-#     os.makedirs(BASE_PATH / f"derivatives/preprocessed_data/{SUBJECT}", exist_ok=True)
-#     evo_diff_average.save(BASE_PATH / f"derivatives/preprocessed_data/{SUBJECT}/{SUBJECT}_evo_diff-ave.fif", overwrite=True)
+#     os.makedirs(BASE_PATH / f"{STUDY}/derivatives/preprocessed_data/{SUBJECT}", exist_ok=True)
+#     evo_diff_average.save(BASE_PATH / f"{STUDY}/derivatives/preprocessed_data/{SUBJECT}/{SUBJECT}_evo_diff-ave.fif", overwrite=True)
+
+for subject_folder in SUBJECTS_DIR.iterdir():
+    SUBJECT = subject_folder.name
+    if not SUBJECT.startswith('sub-'):
+        continue
+
+    preprocessed_dir = SUBJECTS_DIR / f'/derivatives/preprocessed_data'
+
+    if (preprocessed_dir / SUBJECT).exists():
+        continue
+
+    evo_diff_average = preprocessing(SUBJECT)
+
+    os.makedirs(SUBJECTS_DIR / f'/derivatives/preprocessed_data/{SUBJECT}', exist_ok=True)
+    evo_diff_average.save(SUBJECTS_DIR / f'/derivatives/preprocessed_data/{SUBJECT}/{SUBJECT}_evo_diff-ave.fif', overwrite=True)

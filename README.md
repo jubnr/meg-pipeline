@@ -40,15 +40,35 @@ The pipeline is implemented using a combination of Python scripts, shell scripts
 
 ## 2. Pipeline Structure 🏗️
 
-The pipeline is organized into the following directories:
+The pipeline is organized into the following structure:
 ```
 .
 ├── 01_finding-data
+│   ├── anat_mri.txt
+│   ├── find_anat_mri.ipynb
+│   └── participants_to_import.tsv
 ├── 02_data-preparation
+│   └── crop_runs.py
 ├── 03_bids-conversion
+│   ├── formatting_distraction.py
+│   ├── rename_files_impair.sh
+│   └── rename_files_pair.sh
 ├── 04_meg-preprocessing
+│   ├── 01_preprocessing.py
+│   └── 02_get_noise_cov.py
 ├── 05_anat-preprocessing
+│   ├── 01_run_freesurfer_on_subject_id.sh
+│   ├── 02_run_freesurfer_on_all_subjects.sh
+│   ├── 03_bem.py
+│   └── 04_coreg.py
 ├── 06_source-reconstruction
+│   ├── 01_get_source_estimate.py
+│   ├── 02_stc_morphing.py
+│   ├── 03_plotting.py
+│   └── 04_make_report.py
+├── images
+│   └── pipeline.png
+├── MakeFile
 └── README.md
 ```
 
@@ -150,7 +170,7 @@ To run a specific step (e.g., MEG preprocessing):
 - Python script for MEG preprocessing: `01_preprocessing.py`
 - Python script for noise covariance estimation: `02_get_noise_cov.py`
 
-### 06_anat-preprocessing
+### 05_anat-preprocessing
 
 **Purpose:** Preprocess anatomical data.
 
@@ -165,7 +185,7 @@ To run a specific step (e.g., MEG preprocessing):
 - Python script for BEM creation: `03_bem.py`
 - Python script for coregistration: `04_coreg.py`
  
-### 07_source-reconstruction
+### 06_source-reconstruction
 
 **Purpose:** Perform source reconstruction and generate reports.
 
