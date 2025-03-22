@@ -1,8 +1,6 @@
 #! /usr/bin/env python
 
-import os
-import mne
-import mne_bids
+import os, mne
 
 # Subjects folder
 subjects_dir = "/neurospin/unicog/protocols/IRMf/LePetitPrince_Pallier_2018/MEG/workspace-LPP/data/MEG/LPP/freesurfer"

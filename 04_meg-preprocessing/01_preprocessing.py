@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os, yaml
+import os, yaml, gc
 from pathlib import Path
 import mne
 import numpy as np
@@ -9,7 +9,6 @@ import typing as tp
 import dataclasses, itertools
 from wordfreq import zipf_frequency
 from mne.preprocessing import find_bad_channels_maxwell
-import gc
 
 # Load configuration file
 with open("config.yml", "r") as f:

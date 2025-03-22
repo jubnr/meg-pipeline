@@ -2,11 +2,10 @@
 # coding: UTF-8
 
 from pathlib import Path
-import mne
+import mne, argparse
 from mne.coreg import Coregistration
 from mne.io import read_info
 import numpy as np
-import argparse
 
 def automated_coreg(subject, subjects_dir, meg_dir):
     """

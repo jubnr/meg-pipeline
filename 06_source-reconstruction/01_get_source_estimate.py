@@ -9,11 +9,7 @@ os.environ["OPENBLAS_NUM_THREADS"] = num_threads
 os.environ["MKL_NUM_THREADS"] = num_threads
 
 from pathlib import Path
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
-import seaborn as sns
-import mne_bids, mne
+import mne
 from mne.minimum_norm import (make_inverse_operator, apply_inverse, write_inverse_operator)
 
 ## ----- DEFINE PATHS ----- ##

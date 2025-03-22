@@ -1,11 +1,2 @@
 participant_id	NIP	infos_participant	session_label	acq_date	acq_label	location	to_import
-sub-1	test-CP05062024_001	{}		2024-06-05		prisma	(('2','anat','T1w'))
-sub-2	mn240236	{}		2024-06-06		prisma	(('2','anat','T1w'))
-sub-3	to220041	{}		2024-06-20		prisma	(('2','anat','T1w'))
-sub-5	mb220766	{}		2024-07-02		7t	(('31','anat','T1w'))
-sub-6	ka230246	{}		2024-07-22		prisma	(('2','anat','T1w'))
-sub-7	tm240091	{}		2024-07-23		prisma	(('2','anat','T1w'))
-sub-9	lr210454	{}		2024-07-29		prisma	(('2','anat','T1w'))
-sub-10	da240251	{}		2024-07-05		prisma	(('3','anat','T1w'))
-sub-11	ll180197 	{}		2023-06-16		prisma	(('2','anat','T1w'))
-sub-12	ng240362	{}		2024-10-22		prisma	(('2','anat','T1w'))
+sub-02	mn240236	{}	{}	2024-06-06	{}	prisma	

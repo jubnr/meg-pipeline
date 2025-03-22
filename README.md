@@ -1,6 +1,6 @@
 # MEG Pipeline: From Raw Data to Source Reconstruction
 
-Welcome to the **MEG Pipeline**! This repository contains a comprehensive and modular pipeline for processing MEG data, from raw data preparation to source reconstruction. The pipeline is designed to be easy to use, reproducible, and adaptable to various datasets.
+Welcome to the **MEG Pipeline**! This repository contains a comprehensive and modular pipeline for processing MEG data, from raw data preparation to source reconstruction. The pipeline is designed to be easy to use, reproducible, and adaptable to various datasets (currently optimized for LPP_MEG_distraction, LPP_MEG_auditory and LPP_MEG_visual).
 
 ---
 
@@ -22,7 +22,7 @@ Welcome to the **MEG Pipeline**! This repository contains a comprehensive and mo
 
 ---
 
-## 1. Overview 👀
+## 1. Overview 🔎
 
 This pipeline processes MEG data through a series of well-defined steps, ensuring high-quality results for source reconstruction. It includes:
 
