@@ -40,3 +40,7 @@ tolerances:
   (43, 5): [110, 5]
   (44, 9): [30, 5]
   (24, 2): [10, 20]
+
+
+# Optional: List of specific subjects to process
+subjects: "sub-1" # Add specific subjects here, or leave empty to process all

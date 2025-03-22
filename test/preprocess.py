@@ -4,7 +4,7 @@ import os, yaml
 from pathlib import Path
 import mne
 import numpy as np
-import pandas as pdruns
+import pandas as pd
 import typing as tp
 import dataclasses, itertools
 from wordfreq import zipf_frequency
@@ -42,6 +42,11 @@ EPOCH_TMIN = config["epoch_tmin"]
 EPOCH_TMAX = config["epoch_tmax"]
 BASELINE = tuple(config["baseline"])
 RUNS = config["runs"]
+
+# Optional: List of specific subjects to process
+SPECIFIC_SUBJECTS = config.get("subjects", None)  # Default to an empty list if "subjects" is missing
+if isinstance(SPECIFIC_SUBJECTS, str):  # Handle case where "subjects" is a single string
+    SPECIFIC_SUBJECTS = [SPECIFIC_SUBJECTS]
 
 class NoApproximateMatch(ValueError):
     """Error raised when the function could not fully match the two list
@@ -238,27 +243,33 @@ def preprocessing(SUBJECT):
     evo_diff_average = mne.grand_average(evo_diff_all)
     return evo_diff_average
 
-# for SUBJECT in subjects:
-#     preprocessed_dir = BASE_PATH / f"{STUDY}/derivatives/preprocessed_data"
-#     if (preprocessed_dir / SUBJECT).exists():
-#         continue
+# Process specific subjects or all subjects
+if SPECIFIC_SUBJECTS:
+    print("Processing specific subjects:", SPECIFIC_SUBJECTS)  # Debugging statement
+    for SUBJECT in SPECIFIC_SUBJECTS:
+        SUBJECT = SUBJECT.strip()  # Remove trailing spaces
+        print("Current SUBJECT:", SUBJECT)  # Debugging statement
+        preprocessed_dir = SUBJECTS_DIR / "derivatives/preprocessed_data"
+        if (preprocessed_dir / SUBJECT).exists():
+            print(f"Skipping {SUBJECT} (already processed)")
+            continue
 
-#     evo_diff_average = preprocessing(SUBJECT)
+        evo_diff_average = preprocessing(SUBJECT)
+        os.makedirs(SUBJECTS_DIR / f"derivatives/preprocessed_data/{SUBJECT}", exist_ok=True)
+        evo_diff_average.save(SUBJECTS_DIR / f"derivatives/preprocessed_data/{SUBJECT}/{SUBJECT}_evo_diff-ave.fif", overwrite=True)
+else:
+    print("Processing all subjects in the subjects directory.")  # Debugging statement
+    for subject_folder in SUBJECTS_DIR.iterdir():
+        SUBJECT = subject_folder.name
+        if not SUBJECT.startswith("sub-"):
+            continue
 
-#     os.makedirs(BASE_PATH / f"{STUDY}/derivatives/preprocessed_data/{SUBJECT}", exist_ok=True)
-#     evo_diff_average.save(BASE_PATH / f"{STUDY}/derivatives/preprocessed_data/{SUBJECT}/{SUBJECT}_evo_diff-ave.fif", overwrite=True)
+        print("Current SUBJECT:", SUBJECT)  # Debugging statement
+        preprocessed_dir = SUBJECTS_DIR / "derivatives/preprocessed_data"
+        if (preprocessed_dir / SUBJECT).exists():
+            print(f"Skipping {SUBJECT} (already processed)")
+            continue
 
-for subject_folder in SUBJECTS_DIR.iterdir():
-    SUBJECT = subject_folder.name
-    if not SUBJECT.startswith('sub-'):
-        continue
-
-    preprocessed_dir = SUBJECTS_DIR / f'/derivatives/preprocessed_data'
-
-    if (preprocessed_dir / SUBJECT).exists():
-        continue
-
-    evo_diff_average = preprocessing(SUBJECT)
-
-    os.makedirs(SUBJECTS_DIR / f'/derivatives/preprocessed_data/{SUBJECT}', exist_ok=True)
-    evo_diff_average.save(SUBJECTS_DIR / f'/derivatives/preprocessed_data/{SUBJECT}/{SUBJECT}_evo_diff-ave.fif', overwrite=True)
+        evo_diff_average = preprocessing(SUBJECT)
+        os.makedirs(SUBJECTS_DIR / f"derivatives/preprocessed_data/{SUBJECT}", exist_ok=True)
+        evo_diff_average.save(SUBJECTS_DIR / f"derivatives/preprocessed_data/{SUBJECT}/{SUBJECT}_evo_diff-ave.fif", overwrite=True)

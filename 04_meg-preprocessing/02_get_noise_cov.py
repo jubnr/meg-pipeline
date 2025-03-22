@@ -1,32 +1,33 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 
-import os
-
-num_threads = '1'
-os.environ["OMP_NUM_THREADS"] = num_threads
-os.environ["OPENBLAS_NUM_THREADS"] = num_threads
-os.environ["MKL_NUM_THREADS"] = num_threads
-
+import os, yaml, mne
 from pathlib import Path
-import argparse
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
-import mne_bids
-import mne
 
-BASE_PATH = Path('/neurospin/unicog/protocols/IRMf/LePetitPrince_Pallier_2018/MEG/workspace-LPP/data/MEG/LPP/')
-subjects_dir = BASE_PATH / 'LPP_MEG_auditory/derivatives/preprocessed_data/'
-cross_talk_file = BASE_PATH / 'calibration_MEG/old_MEG/ct_sparse_nspn.fif'
-calibration_file = BASE_PATH / 'calibration_MEG/old_MEG/sss_cal_nspn.dat'
+with open("config.yml", "r") as f:
+    config = yaml.safe_load(f)
 
-def get_noise_cov(subject):
+NUM_THREADS = str(config["num_threads"])
+os.environ["OMP_NUM_THREADS"] = NUM_THREADS
+os.environ["OPENBLAS_NUM_THREADS"] = NUM_THREADS
+os.environ["MKL_NUM_THREADS"] = NUM_THREADS
+
+BASE_PATH = Path(config["base_path"])
+SUBJECTS_DIR = BASE_PATH / config["subjects_dir"]
+CROSS_TALK_FILE = BASE_PATH / config["cross_talk_file"]
+CALIBRATION_FILE = BASE_PATH / config["calibration_file"]
+
+SPECIFIC_SUBJECTS = config.get("subjects", []) 
+if isinstance(SPECIFIC_SUBJECTS, str):  
+    SPECIFIC_SUBJECTS = [SPECIFIC_SUBJECTS]
+
+def get_noise_cov(SUBJECT):
     raw_for_cov = []
 
     for i in range(1, 10):
-        raw_fname = BASE_PATH / f'LPP_MEG_auditory/derivatives/preprocessed_data/{subject}/{subject}_ses-01_task-listen_run-0{i}_meg_raw_sss.fif'
 
+        raw_fname = BASE_PATH / f"{STUDY}/derivatives/preprocessed_data/{SUBJECT}/{SUBJECT}_{SESSION}task-{TASK}_run-0{i}_meg_raw_sss.fif"
         raw = mne.io.read_raw_fif(raw_fname, allow_maxshield=True)
+
         events = mne.find_events(raw, stim_channel='STI101')
 
         tmin = events[0][0] / raw.info['sfreq']

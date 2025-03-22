@@ -42,6 +42,11 @@ EPOCH_TMIN = config["epoch_tmin"]
 EPOCH_TMAX = config["epoch_tmax"]
 BASELINE = tuple(config["baseline"])
 
+# Optional: List of specific subjects to process
+SPECIFIC_SUBJECTS = config.get("subjects", None)  # Default to an empty list if "subjects" is missing
+if isinstance(SPECIFIC_SUBJECTS, str):  # Handle case where "subjects" is a single string
+    SPECIFIC_SUBJECTS = [SPECIFIC_SUBJECTS]
+
 
 class NoApproximateMatch(ValueError):
     """Error raised when the function could not fully match the two list
@@ -188,8 +193,8 @@ def preprocessing(SUBJECT):
         del raw_ref
         gc.collect()
 
-        os.makedirs(SUBJECTS_DIR / f"derivatives/preprocessed_data/{SUBJECT}", exist_ok=True)
-        raw_sss.save(SUBJECTS_DIR / f"derivatives/preprocessed_data/{SUBJECT}/{SUBJECT}_{SESSION}task-{TASK}_run-0{i}_meg_raw_sss.fif", overwrite=True)
+        os.makedirs(BASE_PATH / f"{STUDY}/derivatives/preprocessed_data/{SUBJECT}", exist_ok=True)
+        raw_sss.save(BASE_PATH / f"{STUDY}/derivatives/preprocessed_data/{SUBJECT}/{SUBJECT}_{SESSION}task-{TASK}_run-0{i}_meg_raw_sss.fif", overwrite=True)
 
         # ------------- Loading metadata with onsets, words, and duration ------------- #
         words = pd.read_csv(METADATA + f"{SUBJECT}_{SESSION}task-{TASK}_run-0{i}_events.tsv", sep="\t")
@@ -238,28 +243,33 @@ def preprocessing(SUBJECT):
     evo_diff_average = mne.grand_average(evo_diff_all)
     return evo_diff_average
 
-for subject_folder in SUBJECTS_DIR.iterdir():
-    SUBJECT = subject_folder.name
-    if not SUBJECT.startswith('sub-'):
-        continue
+# Process specific subjects or all subjects
+if SPECIFIC_SUBJECTS:
+    print("Processing specific subjects:", SPECIFIC_SUBJECTS)  
+    for SUBJECT in SPECIFIC_SUBJECTS:
+        SUBJECT = SUBJECT.strip()  # Remove trailing spaces
+        print("Current SUBJECT:", SUBJECT) 
+        preprocessed_dir = BASE_PATH / f"{STUDY}/derivatives/preprocessed_data"
+        if (preprocessed_dir / SUBJECT).exists():
+            print(f"Skipping {SUBJECT} (already processed)")
+            continue
 
-    preprocessed_dir = SUBJECTS_DIR / f'derivatives/preprocessed_data'
+        evo_diff_average = preprocessing(SUBJECT)
+        os.makedirs(BASE_PATH / f"{STUDY}/derivatives/preprocessed_data/{SUBJECT}", exist_ok=True)
+        evo_diff_average.save(BASE_PATH / f"{STUDY}/derivatives/preprocessed_data/{SUBJECT}/{SUBJECT}_evo_diff-ave.fif", overwrite=True)
+else:
+    print("Processing all subjects in the subjects directory.")  
+    for subject_folder in SUBJECTS_DIR.iterdir():
+        SUBJECT = subject_folder.name
+        if not SUBJECT.startswith("sub-"):
+            continue
 
-    if (preprocessed_dir / SUBJECT).exists():
-        continue
+        print("Current SUBJECT:", SUBJECT) 
+        preprocessed_dir = BASE_PATH / f"{STUDY}/derivatives/preprocessed_data"
+        if (preprocessed_dir / SUBJECT).exists():
+            print(f"Skipping {SUBJECT} (already processed)")
+            continue
 
-    evo_diff_average = preprocessing(SUBJECT)
-
-    os.makedirs(SUBJECTS_DIR / f'derivatives/preprocessed_data/{SUBJECT}', exist_ok=True)
-    evo_diff_average.save(SUBJECTS_DIR / f'derivatives/preprocessed_data/{SUBJECT}/{SUBJECT}_evo_diff-ave.fif', overwrite=True)
-
-# Uncomment this for doing it for a single subject 
-# for SUBJECT in subjects:
-#     preprocessed_dir = BASE_PATH / f"{STUDY}/derivatives/preprocessed_data"
-#     if (preprocessed_dir / SUBJECT).exists():
-#         continue
-
-#     evo_diff_average = preprocessing(SUBJECT)
-
-#     os.makedirs(BASE_PATH / f"derivatives/preprocessed_data/{SUBJECT}", exist_ok=True)
-#     evo_diff_average.save(BASE_PATH / f"derivatives/preprocessed_data/{SUBJECT}/{SUBJECT}_evo_diff-ave.fif", overwrite=True)
+        evo_diff_average = preprocessing(SUBJECT)
+        os.makedirs(BASE_PATH / f"{STUDY}/derivatives/preprocessed_data/{SUBJECT}", exist_ok=True)
+        evo_diff_average.save(BASE_PATH / f"{STUDY}/derivatives/preprocessed_data/{SUBJECT}/{SUBJECT}_evo_diff-ave.fif", overwrite=True)

@@ -17,7 +17,7 @@ BIDS_DIR = $(BIDS_CONVERSION_DIR)/bids
 # ------ Step 1: Finding data ------ #
 $(PARTICIPANTS_FILE): $(FINDING_DATA_DIR)/find_anat_mri.ipynb
     jupyter nbconvert --execute $(FINDING_DATA_DIR)/find_anat_mri.ipynb
-	
+
 # ------ Step 2: Preparing data ------ #
 $(CROPPED_RUNS): $(PARTICIPANTS_FILE)
     python $(DATA_PREP_DIR)/crop_runs.py --input $(PARTICIPANTS_FILE) --output $(CROPPED_RUNS)
@@ -27,7 +27,7 @@ $(BIDS_DIR): $(CROPPED_RUNS)
     python $(BIDS_CONVERSION_DIR)/formatting_distraction.py --input $(CROPPED_RUNS) --output $(BIDS_DIR)
 
 # ------ Step 4: MEG preprocessing ------ #
-meg-preprocessing: sanity-check
+meg-preprocessing: BIDS_DIR
     python $(MEG_PREPROCESSING_DIR)/01_preprocessing.py --bids_dir $(BIDS_DIR)
     python $(MEG_PREPROCESSING_DIR)/02_get_noise_cov.py --bids_dir $(BIDS_DIR)
 
