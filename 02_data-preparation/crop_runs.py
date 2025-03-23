@@ -1,6 +1,5 @@
-import mne
+import mne, re
 import numpy as np
-import re
 from pathlib import Path
 
 

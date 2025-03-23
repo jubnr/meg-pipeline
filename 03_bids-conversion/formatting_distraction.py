@@ -1,4 +1,5 @@
-#
+#!/usr/bin/env python
+
 import pandas as pd
 import os, re, mne
 from pathlib import Path
@@ -7,12 +8,23 @@ from mne_bids import BIDSPath, write_raw_bids
 # Set mne only for errors, no warnings
 mne.set_log_level("ERROR")
 
-# CONST ###
-BASE_PATH = Path('/home/jb278714/Bureau/LPP_project/data/MEG/meg_distraction/')
+# Load configuration file
+with open("config.yml", "r") as f:
+    config = yaml.safe_load(f)
+
+# Load general parameters of the study
+STUDY = config["study"]
+TASK = config["task"]
+SESSION = config["session"]
+MEG_DIR = config["meg_dir"]
+RUNS = config["runs"]
+
+# Define paths from config
+BASE_PATH = Path(config["base_path"])
+METADATA = config["metadata"]
 BIDS_PATH = BASE_PATH / 'bids'
 RAW_DATA_PATH = BASE_PATH / 'raw'
 TASK = 'distraction'
-annotation_folder = BASE_PATH / 'metadata' / 'extra'
 
 dict_nip_to_sn = {'fa_123456': '1','mn_240236': '2', 'to_220041': '3', 'sg_230179': '4',
                   'mb_220766': '5', 'ka_230246' : '6', 'tm_240091' : '7', 'fb_210353': '8',
@@ -45,7 +57,7 @@ for folder in RAW_DATA_PATH.iterdir():
             raw = mne.io.read_raw_fif(sub_dir / file, allow_maxshield=True)
 
             # Create a BIDS path with the correct parameters
-            bids_path = BIDSPath(subject=sub, session=None, run=run,
+            bids_path = BIDSPath(subject=sub, session=SESSION, run=run,
                                  datatype='meg', root=BIDS_PATH)
             bids_path.task = TASK
 
@@ -67,7 +79,7 @@ for sub in os.listdir(BIDS_PATH):
                 run = match.group(1)
                 run = int(run)
                 try:
-                    df = pd.read_csv(annotation_folder / f'task-distraction_run-{run:02d}_extra_info.csv', sep='\t')
+                    df = pd.read_csv(METADATA / f'task-distraction_run-{run:02d}_extra_info.csv', sep='\t')
 
                     df.to_csv(f'{SUBJ_PATH_BIDS}/{sub}_task-{TASK}_run-{run:02d}_events.tsv', sep='\t')
                 except FileNotFoundError:

@@ -36,8 +36,6 @@ The pipeline is implemented using a combination of Python scripts, shell scripts
 
 ![Pipeline Overview](images/pipeline.png "Pipeline Overview")
 
----
-
 ## 2. Pipeline Structure 🏗️
 
 The pipeline is organized into the following structure:
@@ -73,8 +71,6 @@ The pipeline is organized into the following structure:
 ```
 
 Each directory corresponds to a specific step in the pipeline. Below is a brief description of each step.
-
----
 
 ## 3. Getting Started 📍
 
@@ -118,8 +114,6 @@ To run a specific step (e.g., MEG preprocessing):
    ```bash
     make meg-preprocessing
 ```
-
----
 
 ## 4. Pipeline Steps 📋
 
@@ -200,8 +194,6 @@ To run a specific step (e.g., MEG preprocessing):
 - Python script for visualization: `03_plotting.py`
 - Python script for generating reports: `04_make_report.py`
 
----
-
 ## 5. Outputs
 
 The pipeline generates the following outputs:
@@ -214,5 +206,3 @@ The pipeline generates the following outputs:
 * **Coregistration:** Alignment of MEG and MRI data.
 * **Source estimates:** Reconstructed neural activity.
 * **Reports:** Visualizations and summaries of results.
-
----
