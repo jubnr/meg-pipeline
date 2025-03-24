@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 
-import os, yaml, gc
+import os, yaml, gc, mne, dataclasses, itertools
 from pathlib import Path
-import mne
 import numpy as np
 import pandas as pd
 import typing as tp
-import dataclasses, itertools
 from wordfreq import zipf_frequency
 from mne.preprocessing import find_bad_channels_maxwell
 

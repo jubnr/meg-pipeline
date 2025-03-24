@@ -66,7 +66,6 @@ for folder in RAW_DATA_PATH.iterdir():
         else:
             print(f"Skipping file {file}")
             continue
-#%%
 
 # Putting the generated annotation files in the correct directories
 for sub in os.listdir(BIDS_PATH):
@@ -89,4 +88,3 @@ print(f"\n \n ***************************************************\
 \n Script finished!\n \
 ***************************************************\
 \n Folder created: \n For bids: {BIDS_PATH} \n ")
-#%%
